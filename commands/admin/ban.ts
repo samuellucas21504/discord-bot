@@ -1,3 +1,4 @@
+import { BaseCommand } from "base/baseCommand.js";
 import {
   ChatInputCommandInteraction,
   SlashCommandStringOption,
@@ -28,4 +29,10 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.guild!.members.ban(target!);
 };
 
-export { data, execute };
+class BanCommand extends BaseCommand {
+  constructor() {
+    super(data, execute);
+  }
+}
+
+export const command = new BanCommand();
