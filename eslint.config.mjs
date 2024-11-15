@@ -1,5 +1,5 @@
 import js from '@eslint/js';
-import ts from '@typescript-eslint/eslint-plugin';
+import ts from 'typescript-eslint';
 import tsParser from '@typescript-eslint/parser';
 import globals from 'globals';
 
@@ -36,7 +36,6 @@ export default [
       'no-multi-spaces': 'error',
       'no-multiple-empty-lines': ['error', { max: 2, maxEOF: 1, maxBOF: 0 }],
       'no-shadow': ['error', { allow: ['err', 'resolve', 'reject'] }],
-      '@typescript-eslint/no-shadow': 'error',
       'no-var': 'error',
       'object-curly-spacing': ['error', 'always'],
       'prefer-const': 'error',
