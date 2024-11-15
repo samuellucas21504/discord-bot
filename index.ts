@@ -1,6 +1,9 @@
+import 'module-alias/register';
+
 import fs from 'node:fs';
 import path from 'node:path';
-import { Collection, GatewayIntentBits, Client } from 'discord.js';
+import { Collection, GatewayIntentBits } from 'discord.js';
+import Client from '@utils/client.js';
 import { token } from './config.json';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
