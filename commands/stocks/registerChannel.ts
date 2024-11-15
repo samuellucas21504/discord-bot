@@ -1,3 +1,4 @@
+import { BaseCommand } from 'base/baseCommand.js';
 import {
   ChatInputCommandInteraction,
   SlashCommandBuilder
@@ -22,4 +23,11 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
   }
 };
 
-export { data, execute };
+class StockCommand extends BaseCommand {
+  constructor() {
+    super(data, execute);
+  }
+}
+
+export const command = new StockCommand();
+

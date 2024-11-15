@@ -1,7 +1,8 @@
-const { REST, Routes } = require('discord.js');
-const { client_id: clientId, guild_id: guildId, token } = require('./config.json');
-const fs = require('node:fs');
-const path = require('node:path');
+import { REST, Routes } from 'discord.js';
+import { client_id as clientId, guild_id as guildId, token } from './config.json';
+import { APIApplicationCommand } from 'discord-api-types/v10';
+import fs from 'node:fs';
+import path from 'node:path';
 
 
 const commands = [];
@@ -11,7 +12,7 @@ const commandFolders = fs.readdirSync(foldersPath);
 for (const folder of commandFolders) {
   const commandsPath = path.join(foldersPath, folder);
   const commandFiles = fs.readdirSync(commandsPath)
-    .filter((file: string) => (file.endsWith('.js') || file.endsWith('.ts')));
+    .filter((file: string) => (file.endsWith('.ts')));
 
   for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
@@ -34,7 +35,7 @@ const rest = new REST().setToken(token);
     const data = await rest.put(
       Routes.applicationGuildCommands(clientId, guildId),
       { body: commands },
-    );
+    ) as APIApplicationCommand[];
 
     console.log(`Successfully reloaded ${data.length} application (/) commands.`);
   }
