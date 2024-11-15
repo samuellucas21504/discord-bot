@@ -3,11 +3,11 @@ const { stocks } = require('./config.json');
 
 import type { AxiosRequestHeaders } from "axios";
 
-interface IApi {
+export interface IApi {
   headers?: AxiosRequestHeaders;
 }
 
-class StockService extends ApiService {
+export class StockService extends ApiService {
   constructor({ headers }: IApi = {}) {
     super({
       baseURL: stocks.base_url,
