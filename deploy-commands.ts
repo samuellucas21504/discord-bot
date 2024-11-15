@@ -1,5 +1,6 @@
 import { REST, Routes } from 'discord.js';
 import { client_id as clientId, guild_id as guildId, token } from './config.json';
+import { dirName as __dirname } from '@utils/dirname.js';
 import { APIApplicationCommand } from 'discord-api-types/v10';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,8 +17,10 @@ for (const folder of commandFolders) {
 
   for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
-    if ('data' in command && 'execute' in command) {
+    const imported = await import(filePath);
+    const command = imported.command.data;
+
+    if (command.data && command.execute) {
       commands.push(command.data.toJSON());
     }
     else {

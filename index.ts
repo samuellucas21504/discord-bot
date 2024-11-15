@@ -1,16 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { Collection, GatewayIntentBits } from 'discord.js';
+import { dirName as __dirname } from '@utils/dirname.js';
 import Client from '@utils/client.js';
 import { token } from './config.json';
 
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const client = Client.init();
+export const client = Client.init();
 
 const folderPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(folderPath);
