@@ -6,6 +6,12 @@ import { Collection, GatewayIntentBits } from 'discord.js';
 import Client from '@utils/client.js';
 import { token } from './config.json';
 
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.commands = new Collection();
@@ -21,7 +27,7 @@ for (const folder of commandFolders) {
 
   for (const file of commandFiles) {
     const filePath = path.join(commandPath, file);
-    const command = require(filePath);
+    const command = await import(filePath);
 
     if ('data' in command && 'execute' in command) {
       client.commands.set(command.data.name, command);
@@ -38,7 +44,7 @@ const eventFiles = fs.readdirSync(eventsPath)
 
 for (const file of eventFiles) {
   const filePath = path.join(eventsPath, file);
-  const event = require(filePath);
+  const event = await import(filePath);
 
   if (event.once) {
     client.once(event.name, (...args) => event.execute(...args));
