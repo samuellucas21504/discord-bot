@@ -10,10 +10,7 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-client.commands = new Collection();
-client.cooldowns = new Collection();
+const client = Client.init();
 
 const folderPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(folderPath);
@@ -24,7 +21,8 @@ for (const folder of commandFolders) {
 
   for (const file of commandFiles) {
     const filePath = path.join(commandPath, file);
-    const command = await import(filePath);
+    const imported = await import(filePath);
+    const command = imported.command.data;
 
     if (command.data != null && command.execute != null) {
       client.commands.set(command.data.name, command);
