@@ -5,7 +5,7 @@ export abstract class BaseEvent {
   private _once: boolean;
   private _execute: (arg0: any) => any;
 
-  public constructor(name: string, once: boolean, execute: (interaction: CommandInteraction) => void) {
+  public constructor(name: string, once: boolean, execute: (interaction: any) => any) {
     this._name = name;
     this._once = once;
     this._execute = execute;
