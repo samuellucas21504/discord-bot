@@ -4,7 +4,7 @@
     "discord.js": "^14.16.3"
   },
   "name": "bot",
-  "type": "commonjs",
+  "type": "module",
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
@@ -22,6 +22,12 @@
     "stock": "tsx run src/stock-market-test.ts",
     "start": "node dist/index.js",
     "build": "tsup src/index.ts --minify"
+  },
+  "_moduleAliases": {
+    "@types": "dist/types.js",
+    "@commands": "dist/commands",
+    "@utils": "dist/utils",
+    "@baseCommands": "dist/baseCommands"
   },
   "keywords": [],
   "author": "",
