@@ -1,6 +1,6 @@
-import { Client, Collection } from "discord.js"
+import { Client as DiscordClient, Collection } from "discord.js"
 
-export default class MyClient extends Client {
+export default class Client extends DiscordClient {
   public commands: Collection<string, any>;
   public cooldowns: Collection<any, any>;
 

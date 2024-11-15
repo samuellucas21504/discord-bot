@@ -1,9 +1,15 @@
-const { Events } = require('discord.js');
+import Client from "@utils/client.js";
+import { BaseEvent } from "base/baseEvent.js";
+import { Events } from 'discord.js';
 
-module.exports = {
-  name: Events.ClientReady,
-  once: true,
-  execute(client) {
-    console.log(`Ready! Logged in as ${client.user.tag}`);
-  },
+const execute = async (client: any) => {
+  console.log(`Ready! Logged in as ${client.user!.tag}`);
 };
+
+class ClientReadyEvent extends BaseEvent {
+  constructor() {
+    super(Events.ClientReady, true, execute);
+  }
+}
+
+export const event = new ClientReadyEvent();

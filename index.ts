@@ -1,5 +1,3 @@
-import 'module-alias/register';
-
 import fs from 'node:fs';
 import path from 'node:path';
 import { Collection, GatewayIntentBits } from 'discord.js';
@@ -22,14 +20,13 @@ const commandFolders = fs.readdirSync(folderPath);
 
 for (const folder of commandFolders) {
   const commandPath = path.join(folderPath, folder);
-  const commandFiles = fs.readdirSync(commandPath)
-    .filter(file => (file.endsWith('.js') || file.endsWith('.ts')));
+  const commandFiles = fs.readdirSync(commandPath).filter(file => (file.endsWith('.ts')));
 
   for (const file of commandFiles) {
     const filePath = path.join(commandPath, file);
     const command = await import(filePath);
 
-    if ('data' in command && 'execute' in command) {
+    if (command.data != null && command.execute != null) {
       client.commands.set(command.data.name, command);
     }
     else {
@@ -39,12 +36,12 @@ for (const folder of commandFolders) {
 }
 
 const eventsPath = path.join(__dirname, 'events');
-const eventFiles = fs.readdirSync(eventsPath)
-  .filter(file => (file.endsWith('.js') || file.endsWith('.ts')));
+const eventFiles = fs.readdirSync(eventsPath).filter(file => (file.endsWith('.ts')));
 
 for (const file of eventFiles) {
   const filePath = path.join(eventsPath, file);
-  const event = await import(filePath);
+  const imported = await import(filePath);
+  const event = imported.event.data;
 
   if (event.once) {
     client.once(event.name, (...args) => event.execute(...args));
