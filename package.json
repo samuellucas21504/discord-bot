@@ -2,7 +2,9 @@
   "dependencies": {
     "@types/node": "^22.9.0",
     "axios": "^1.7.7",
-    "discord.js": "^14.16.3"
+    "discord.js": "^14.16.3",
+    "mysql2": "^3.11.4",
+    "sequelize": "^6.37.5"
   },
   "name": "bot",
   "type": "module",
