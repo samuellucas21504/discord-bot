@@ -1,5 +1,5 @@
 import Client from "@utils/client.js";
-import { BaseEvent } from "base/baseEvent.js";
+import { BaseEvent } from "@base/baseEvent.js";
 import { Events } from 'discord.js';
 
 const execute = async (client: Client) => {

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "NodeNext",
-    "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "./dist",
     "removeComments": true,
     "moduleResolution": "nodenext",
@@ -12,16 +12,22 @@
     "strict": true,
     "strictNullChecks": true,
     "skipLibCheck": true,
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
+      "@base/*": [
+        "src/base/*"
+      ],
       "@commands/*": [
-        "commands/*"
+        "src/commands/*"
       ],
       "@utils/*": [
-        "utils/*"
+        "src/utils/*"
       ],
       "@services/*": [
-        "services/*"
+        "src/services/*"
+      ],
+      "@models/*": [
+        "models/*"
       ]
     },
   }

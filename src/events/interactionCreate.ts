@@ -1,6 +1,6 @@
 import Client from "@utils/client.js";
 import { getCooldown } from "@utils/getCooldown.js";
-import { BaseEvent } from "base/baseEvent.js";
+import { BaseEvent } from "@base/baseEvent.js";
 import { Events, CommandInteraction } from "discord.js";
 
 const command = async (interaction: CommandInteraction) => {

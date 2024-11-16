@@ -1,6 +1,4 @@
-const axios = require("axios");
-
-import type { AxiosInstance, AxiosRequestHeaders } from "axios";
+import axios, { AxiosInstance, AxiosRequestHeaders } from "axios";
 
 export interface ApiServiceOptions {
   baseURL: string;

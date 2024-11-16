@@ -17,7 +17,6 @@ module.exports = {
   async execute(interaction) {
     if (interaction.options.getSubcommand() === 'user') {
       const user = interaction.options.getUser('target');
-      console.log(user);
 
       if (user) {
         await interaction.reply({ content: `Username: ${user.username}\nID: ${user.id}`, ephemeral: true });
