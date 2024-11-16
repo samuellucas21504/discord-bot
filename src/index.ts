@@ -2,11 +2,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { dirName as __dirname } from '@utils/dirname.js';
 import Client from '@utils/client.js';
-import { token } from './config.json';
+import { ENV } from '@utils/env.js';
+
+ENV.init();
 
 const client = Client.instance;
+const token = process.env.BOT_TOKEN;
 
-const folderPath = path.join(__dirname, 'commands');
+const folderPath = path.join(__dirname, 'src/commands');
 const commandFolders = fs.readdirSync(folderPath);
 
 for (const folder of commandFolders) {
@@ -27,7 +30,7 @@ for (const folder of commandFolders) {
   }
 }
 
-const eventsPath = path.join(__dirname, 'events');
+const eventsPath = path.join(__dirname, 'src/events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => (file.endsWith('.ts')));
 
 for (const file of eventFiles) {

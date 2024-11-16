@@ -1,13 +1,18 @@
 import { REST, Routes } from 'discord.js';
-import { client_id as clientId, guild_id as guildId, token } from './config.json';
 import { dirName as __dirname } from '@utils/dirname.js';
 import { APIApplicationCommand } from 'discord-api-types/v10';
 import fs from 'node:fs';
 import path from 'node:path';
+import { ENV } from '@utils/env.js';
 
+ENV.init();
+
+const clientId = process.env.CLIENT_ID!;
+const guildId = process.env.GUILD_ID!;
+const token = process.env.BOT_TOKEN!;
 
 const commands = [];
-const foldersPath = path.join(__dirname, 'commands');
+const foldersPath = path.join(__dirname, '/src/commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
 for (const folder of commandFolders) {
