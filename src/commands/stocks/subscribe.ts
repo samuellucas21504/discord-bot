@@ -23,6 +23,11 @@ const data = new SlashCommandBuilder()
       .setName('add')
       .setDescription('Adiciona uma ação na sua lista de notificações.')
       .addStringOption(option => option.setName('ticker').setDescription('O ticker da ação. Exemplo: AAPL34, TSLA34, INTB3.')))
+  .addSubcommand(subcommand =>
+    subcommand
+      .setName('remove')
+      .setDescription('Remove uma ação da sua lista de notificações')
+      .addStringOption(option => option.setName('ticker').setDescription('O ticker da ação. Exemplo: AAPL34, TSLA34, INTB3.')))
 
 
 class StockCommand extends BaseCommand {
@@ -36,8 +41,8 @@ class StockCommand extends BaseCommand {
   }
 
   public execute = async (interaction: ChatInputCommandInteraction) => {
-    if (interaction.options.getSubcommand() === 'subscribe') {
-      try {
+    try {
+      if (interaction.options.getSubcommand() === 'subscribe') {
         await this._userService.create(interaction.user, interaction.guild!);
 
         interaction.reply({
@@ -46,27 +51,9 @@ class StockCommand extends BaseCommand {
         });
 
         return;
-      } catch (exception) {
-        if (exception instanceof BaseError) {
-          interaction.reply({
-            content: `${exception.message}`,
-            ephemeral: true,
-          });
-
-          return;
-        }
-
-        interaction.reply({
-          content: 'Ocorreu um erro durante a execução desse comando! Por favor tente mais tarde!',
-          ephemeral: true,
-        });
-
-        return;
       }
-    }
 
-    if (interaction.options.getSubcommand() === 'unsubscribe') {
-      try {
+      if (interaction.options.getSubcommand() === 'unsubscribe') {
         this._userService.delete(interaction.user);
 
         interaction.reply({
@@ -75,27 +62,9 @@ class StockCommand extends BaseCommand {
         });
 
         return;
-      } catch (exception) {
-        if (exception instanceof BaseError) {
-          interaction.reply({
-            content: `${exception.message}`,
-            ephemeral: true,
-          });
-
-          return;
-        }
-
-        interaction.reply({
-          content: 'Ocorreu um erro durante a execução desse comando! Por favor tente mais tarde!',
-          ephemeral: true,
-        });
-
-        return;
       }
-    }
 
-    if (interaction.options.getSubcommand() === 'add') {
-      try {
+      if (interaction.options.getSubcommand() === 'add') {
         const ticker = interaction.options.getString('ticker');
         if (ticker == null) {
           interaction.reply({
@@ -106,7 +75,7 @@ class StockCommand extends BaseCommand {
           return;
         }
 
-        await this._stockService.addStockToUser(interaction.user, ticker);
+        await this._stockService.addToUser(interaction.user, ticker);
 
         interaction.reply({
           content: `Você receberá notificações diárias de ${ticker}.`,
@@ -114,27 +83,48 @@ class StockCommand extends BaseCommand {
         });
 
         return;
-      } catch (exception) {
-        if (exception instanceof BaseError) {
-          console.log(exception);
+      }
+
+      if (interaction.options.getSubcommand() === 'remove') {
+        const ticker = interaction.options.getString('ticker');
+        if (ticker == null) {
           interaction.reply({
-            content: `${exception.message}`,
+            content: 'Por favor digite o ticker.',
             ephemeral: true,
           });
 
           return;
         }
-        console.log(exception);
+
+        await this._stockService.removeOfUser(interaction.user, ticker);
 
         interaction.reply({
-          content: 'Ocorreu um erro durante a execução desse comando! Por favor tente mais tarde!',
+          content: `Você deixará de receber notificações diárias de ${ticker}.`,
+          ephemeral: true,
+        });
+      }
+
+    } catch (exception) {
+      if (exception instanceof BaseError) {
+        console.log(exception);
+        interaction.reply({
+          content: `${exception.message}`,
           ephemeral: true,
         });
 
         return;
       }
+
+      console.log(exception);
+
+      interaction.reply({
+        content: 'Ocorreu um erro durante a execução desse comando! Por favor tente mais tarde!',
+        ephemeral: true,
+      });
+
+      return;
     }
-  };
+  }
 }
 
 export const command = new StockCommand();

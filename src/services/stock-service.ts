@@ -37,7 +37,7 @@ export class StockService extends ApiService {
     });
   }
 
-  public async addStockToUser(user: DiscordUser, ticker: string) {
+  public async addToUser(user: DiscordUser, ticker: string) {
     const userOnDb = await this._userService.find(user);
     if (userOnDb == null) {
       throw new UserNotFoundError();
@@ -49,6 +49,20 @@ export class StockService extends ApiService {
     }
 
     await userOnDb.addStock(stock);
+  }
+
+  public async removeOfUser(user: DiscordUser, ticker: string) {
+    const userOnDb = await this._userService.find(user);
+    if (userOnDb == null) {
+      throw new UserNotFoundError();
+    }
+
+    const stock = await this.find(ticker);
+    if (stock == null) {
+      throw new StockNotFoundError(ticker);
+    }
+
+    await userOnDb.removeStock(stock);
   }
 
   public async getStocks() {
