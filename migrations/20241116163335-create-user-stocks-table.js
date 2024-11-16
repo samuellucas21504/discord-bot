@@ -2,13 +2,13 @@
 
 export default {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('UserStocks', {
+    await queryInterface.createTable('user_stocks', {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
-      userId: {
+      user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -17,7 +17,7 @@ export default {
         },
         onDelete: 'CASCADE',
       },
-      stockId: {
+      stock_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -26,12 +26,12 @@ export default {
         },
         onDelete: 'CASCADE',
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.NOW,
       },
-      updatedAt: {
+      updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.NOW,
@@ -40,6 +40,6 @@ export default {
   },
 
   async down(queryInterface) {
-    await queryInterface.dropTable('UserStocks');
+    await queryInterface.dropTable('user_stocks');
   },
 };

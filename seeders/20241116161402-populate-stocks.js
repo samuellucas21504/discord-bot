@@ -8,8 +8,8 @@ export async function up(queryInterface) {
 
     const stocks = tickers.map(ticker => ({
       symbol: ticker,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      created_at: new Date(),
+      updated_at: new Date(),
     }));
 
     await queryInterface.bulkInsert('stocks', stocks);

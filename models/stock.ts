@@ -1,48 +1,44 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
+import { Database } from './index.js';
+import User from '@models/user.js';
+
+const sequelize = await Database.getSequelize();
 
 interface StockAttributes {
   id?: number;
   symbol: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
-export default (sequelize: Sequelize) => {
-  class Stock extends Model<StockAttributes> implements StockAttributes {
-    public id!: number;
-    public symbol!: string;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
+class Stock extends Model<StockAttributes> { }
 
-    static associate(models: any) {
-      Stock.belongsToMany(models.User, {
-        through: 'UserStocks',
-        foreignKey: 'stockId',
-        otherKey: 'userId',
-      });
-    }
+Stock.init({
+  symbol: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+},
+  {
+    sequelize,
+    modelName: 'Stock',
+    tableName: 'stocks',
+    timestamps: true,
+    underscored: true,
   }
+);
 
-  Stock.init(
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-      },
-      symbol: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-    },
-    {
-      sequelize,
-      modelName: 'Stock',
-      tableName: 'stocks',
-      timestamps: true,
-    }
-  );
+User.belongsToMany(Stock, {
+  through: 'user_stocks',
+  foreignKey: 'userId',
+  otherKey: 'stockId',
+});
 
-  return Stock;
-};
+Stock.belongsToMany(User, {
+  through: 'user_stocks',
+  foreignKey: 'stockId',
+  otherKey: 'userId',
+});
+
+
+export default Stock;

@@ -12,17 +12,16 @@ export default {
       user_id: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
       },
       display_name: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      global_name: {
+      tag: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      subscription_channel: {
+      subscribed_on: {
         type: Sequelize.STRING,
         allowNull: true,
       },
@@ -40,6 +39,11 @@ export default {
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
+    });
+
+    await queryInterface.addIndex('users', ['user_id'], {
+      name: 'user_id_index',
+      unique: false,
     });
   },
 

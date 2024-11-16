@@ -1,4 +1,4 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import { Database } from '@models/index.js';
 
 const sequelize = await Database.getSequelize();
@@ -7,21 +7,13 @@ interface UserAttributes {
   id?: number;
   userId: string;
   displayName?: string;
-  globalName?: string;
-  subscriptionChannel?: string;
+  tag?: string;
+  subscribedOn?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-class User extends Model<UserAttributes> implements UserAttributes {
-  public id!: number;
-  public userId!: string;
-  public displayName?: string;
-  public globalName?: string;
-  public subscriptionChannel?: string;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
-}
+class User extends Model<UserAttributes> { }
 
 export default User.init(
   {
@@ -41,13 +33,13 @@ export default User.init(
       type: DataTypes.STRING,
       field: 'display_name',
     },
-    globalName: {
+    tag: {
       type: DataTypes.STRING,
-      field: 'global_name',
+      field: 'tag',
     },
-    subscriptionChannel: {
+    subscribedOn: {
       type: DataTypes.STRING,
-      field: 'subscription_channel',
+      field: 'subscribed_on',
     },
   },
   {
@@ -56,5 +48,6 @@ export default User.init(
     tableName: 'users',
     timestamps: true,
     underscored: true,
+    paranoid: true
   }
 );
