@@ -4,7 +4,7 @@ import { dirName as __dirname } from '@utils/dirname.js';
 import Client from '@utils/client.js';
 import { token } from './config.json';
 
-export const client = Client.init();
+const client = Client.instance;
 
 const folderPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(folderPath);
