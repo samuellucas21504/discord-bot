@@ -1,4 +1,4 @@
-import { ApiService } from '@services/api/api-service.js';
+import { ApiService } from '@services/api-service.js';
 
 import { AxiosRequestHeaders } from "axios";
 
