@@ -1,5 +1,5 @@
-import Client from '@utils/client.js';
-import { BaseCommand } from 'base/baseCommand.js';
+import { UserService } from '@services/user-service.js';
+import { BaseCommand } from '@base/baseCommand.js';
 import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -17,27 +17,31 @@ const data = new SlashCommandBuilder()
       .setName('unsubscribe')
       .setDescription('Sair do canal de notificações.'))
 
-
-const execute = async (interaction: ChatInputCommandInteraction) => {
-  if (interaction.options.getSubcommand() === 'subscribe') {
-    interaction.reply({
-      content: 'A partir de agora te enviarei ações na sua DM. Voce pode adicionar novas ações usando `/stocks add indicador_da_acao`',
-      ephemeral: true,
-    });
-  }
-
-  if (interaction.options.getSubcommand() === 'unsubscribe') {
-    interaction.reply({
-      content: 'Irei parar de te enviar notificações na sua DM.',
-      ephemeral: true,
-    });
-  }
-};
-
 class StockCommand extends BaseCommand {
+  private _userService: UserService;
+
   constructor() {
-    super(data, execute);
+    super(data);
+    this._userService = new UserService();
   }
+
+  public execute = async (interaction: ChatInputCommandInteraction) => {
+    if (interaction.options.getSubcommand() === 'subscribe') {
+      this._userService.create(interaction.user, interaction.channel!);
+
+      interaction.reply({
+        content: 'A partir de agora te enviarei ações na sua DM. Voce pode adicionar novas ações usando `/stocks add indicador_da_acao`',
+        ephemeral: true,
+      });
+    }
+
+    if (interaction.options.getSubcommand() === 'unsubscribe') {
+      interaction.reply({
+        content: 'Irei parar de te enviar notificações na sua DM.',
+        ephemeral: true,
+      });
+    }
+  };
 }
 
 export const command = new StockCommand();

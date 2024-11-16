@@ -22,10 +22,6 @@ export default {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      subscribed_at: {
-        type: Sequelize.DATE,
-        allowNull: true,
-      },
       subscription_channel: {
         type: Sequelize.STRING,
         allowNull: true,

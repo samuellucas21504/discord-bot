@@ -1,4 +1,4 @@
-import { BaseCommand } from "base/baseCommand.js";
+import { BaseCommand } from "@base/baseCommand.js";
 import {
   ChatInputCommandInteraction,
   SlashCommandStringOption,
@@ -21,18 +21,19 @@ const data = new SlashCommandBuilder()
       .setDescription('The reason for banning'))
   .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers);
 
-const execute = async (interaction: ChatInputCommandInteraction) => {
-  const target = interaction.options.getUser('target');
-  const reason = interaction.options.getString('reason') ?? 'No reason provided';
-
-  await interaction.reply(`Banning ${target!.username} for reason: ${reason}`);
-  await interaction.guild!.members.ban(target!);
-};
 
 class BanCommand extends BaseCommand {
   constructor() {
-    super(data, execute);
+    super(data);
   }
+
+  execute = async (interaction: ChatInputCommandInteraction) => {
+    const target = interaction.options.getUser('target');
+    const reason = interaction.options.getString('reason') ?? 'No reason provided';
+
+    await interaction.reply(`Banning ${target!.username} for reason: ${reason}`);
+    await interaction.guild!.members.ban(target!);
+  };
 }
 
 export const command = new BanCommand();

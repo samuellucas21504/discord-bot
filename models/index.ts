@@ -1,47 +1,42 @@
-import { readdirSync } from 'fs';
-import { basename as _basename, join } from 'path';
-import { Sequelize, DataTypes } from 'sequelize';
+import { basename as _basename } from 'path';
+import { Sequelize } from 'sequelize';
 import { env as _env } from 'process';
 
-const basename = _basename(__filename);
-const env = _env.NODE_ENV || 'development';
-const config = require('../config/config.ts')[env];
-const db: { [key: string]: any; sequelize?: Sequelize; Sequelize?: typeof Sequelize } = {};
+export class Database {
+  private static _sequelize: Sequelize;
+  public static db: { [key: string]: any; sequelize?: Sequelize; Sequelize?: typeof Sequelize } = {};
 
-let sequelize: Sequelize;
+  public static getSequelize = async () => {
+    if (this._sequelize) {
+      return this._sequelize;
+    }
 
-if (config.use_env_variable) {
-  sequelize = new Sequelize(_env[config.use_env_variable] as string, config);
-} else {
-  sequelize = new Sequelize(
-    config.database as string,
-    config.username as string,
-    config.password as string,
-    config
-  );
-}
+    this._sequelize = await this.init();
 
-readdirSync(__dirname)
-  .filter((file) => {
-    return (
-      file.indexOf('.') !== 0 &&
-      file !== basename &&
-      file.slice(-3) === '.ts' && // Alterado para carregar arquivos TypeScript
-      file.indexOf('.test.ts') === -1
-    );
-  })
-  .forEach((file) => {
-    const model = require(join(__dirname, file)).default(sequelize, DataTypes);
-    db[model.name] = model;
-  });
+    this.db.sequelize = this._sequelize;
+    this.db.Sequelize = Sequelize;
 
-Object.keys(db).forEach((modelName) => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
+    return this._sequelize;
   }
-});
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+  private static init = async () => {
+    const env = _env.NODE_ENV || 'development';
+    const imported = await import('../config/config.js') as any;
+    const config = imported['default'][env];
 
-export default db;
+    let sequelize = null;
+
+    if (config.use_env_variable) {
+      sequelize = new Sequelize(_env[config.use_env_variable] as string, config);
+    } else {
+      sequelize = new Sequelize(
+        config.database as string,
+        config.username as string,
+        config.password as string,
+        config
+      );
+    }
+
+    return sequelize;
+  }
+}
