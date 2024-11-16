@@ -30,6 +30,7 @@
     "dev": "tsx watch src/index.ts",
     "stock": "tsx run src/stock-market-test.ts",
     "start": "node dist/index.js",
+    "sequelize": "npx tsx ./node_modules/.bin/sequelize",
     "build": "tsup src/index.ts --minify"
   },
   "keywords": [],
