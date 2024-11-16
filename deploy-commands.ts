@@ -1,21 +1,31 @@
-const { REST, Routes } = require('discord.js');
-const { client_id: clientId, guild_id: guildId, token } = require('./config.json');
-const fs = require('node:fs');
-const path = require('node:path');
+import { REST, Routes } from 'discord.js';
+import { dirName as __dirname } from '@utils/dirname.js';
+import { APIApplicationCommand } from 'discord-api-types/v10';
+import fs from 'node:fs';
+import path from 'node:path';
+import { ENV } from '@utils/env.js';
 
+ENV.init();
+
+const clientId = process.env.CLIENT_ID!;
+const guildId = process.env.GUILD_ID!;
+const token = process.env.BOT_TOKEN!;
 
 const commands = [];
-const foldersPath = path.join(__dirname, 'commands');
+const foldersPath = path.join(__dirname, '/src/commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
 for (const folder of commandFolders) {
   const commandsPath = path.join(foldersPath, folder);
-  const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+  const commandFiles = fs.readdirSync(commandsPath)
+    .filter((file: string) => (file.endsWith('.ts')));
 
   for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
-    if ('data' in command && 'execute' in command) {
+    const imported = await import(filePath);
+    const command = imported.command.data;
+
+    if (command.data && command.execute) {
       commands.push(command.data.toJSON());
     }
     else {
@@ -33,7 +43,7 @@ const rest = new REST().setToken(token);
     const data = await rest.put(
       Routes.applicationGuildCommands(clientId, guildId),
       { body: commands },
-    );
+    ) as APIApplicationCommand[];
 
     console.log(`Successfully reloaded ${data.length} application (/) commands.`);
   }

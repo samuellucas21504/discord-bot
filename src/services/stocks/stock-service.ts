@@ -1,7 +1,6 @@
-const { ApiService } = require('./api-service');
-const { stocks } = require('./config.json');
+import { ApiService } from '@services/api/api-service.js';
 
-import type { AxiosRequestHeaders } from "axios";
+import { AxiosRequestHeaders } from "axios";
 
 export interface IApi {
   headers?: AxiosRequestHeaders;
@@ -10,8 +9,8 @@ export interface IApi {
 export class StockService extends ApiService {
   constructor({ headers }: IApi = {}) {
     super({
-      baseURL: stocks.base_url,
-      token: stocks.token,
+      baseURL: process.env.STOCKS_BASE_URL!,
+      token: process.env.STOCKS_TOKEN,
       headers: headers,
     });
   };

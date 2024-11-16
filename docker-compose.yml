@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./package.json:/usr/src/app/package.json
+      - ./package-lock.json:/usr/src/app/package-lock.json
+    depends_on:
+      - mysql
+      - redis
+    env_file:
+      - ${ENV_FILE}
+
+  mysql:
+    build:
+      context: ./docker/mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+    env_file:
+      - ${ENV_FILE}
+    ports:
+      - "3307:3306"
+
+  redis:
+    build:
+      context: ./docker/redis
+    env_file:
+      - ${ENV_FILE}
+    ports:
+      - "6379:6379"
+
+volumes:
+  mysql_data:
