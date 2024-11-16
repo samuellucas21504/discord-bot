@@ -21,8 +21,16 @@ export default (sequelize: Sequelize) => {
     public subscribedAt!: Date;
     public subscriptionChannel!: string;
     public deletedAt!: Date | null;
-    public createdAt!: Date;
-    public updatedAt!: Date;
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+
+    static associate(models: any) {
+      User.belongsToMany(models.Stock, {
+        through: 'UserStocks',
+        foreignKey: 'userId',
+        otherKey: 'stockId',
+      });
+    }
   }
 
   User.init(
