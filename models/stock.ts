@@ -11,7 +11,9 @@ interface StockAttributes {
   updated_at?: Date;
 }
 
-class Stock extends Model<StockAttributes> { }
+class Stock extends Model<StockAttributes> {
+  declare symbol: string;
+}
 
 Stock.init({
   symbol: {

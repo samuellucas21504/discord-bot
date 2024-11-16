@@ -65,17 +65,30 @@ export class StockService extends ApiService {
     await userOnDb.removeStock(stock);
   }
 
-  public async getStocks() {
-    const tickers = 'AAPL34';
+  public async getStocks(user: DiscordUser) {
+    const userOnDb = await this._userService.find(user);
+    if (userOnDb == null) {
+      throw new UserNotFoundError();
+    }
+
     const params = {
       range: '1d',
       interval: '1d',
     };
 
-    console.log(this.client.getUri())
+    const stocks = await userOnDb.getStocks();
+    const stockPrices: any[] = [];
+    stocks.forEach(async (stock) => {
+      const result = await this.client.get(`quote/${stock.symbol}`, {
+        params: params,
+      });
 
-    return await this.client.get(`quote/${tickers}`, {
-      params: params,
-    });
+      console.log(result.data);
+      console.log(result.data.results[0]);
+      stockPrices.push(result.data.results[0]);
+    })
+
+
+    return stockPrices;
   }
 }

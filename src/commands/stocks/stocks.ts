@@ -20,6 +20,10 @@ const data = new SlashCommandBuilder()
       .setDescription('Sair do canal de notificações.'))
   .addSubcommand(subcommand =>
     subcommand
+      .setName('get')
+      .setDescription('Buscar novamente suas ações do dia'))
+  .addSubcommand(subcommand =>
+    subcommand
       .setName('add')
       .setDescription('Adiciona uma ação na sua lista de notificações.')
       .addStringOption(option => option.setName('ticker').setDescription('O ticker da ação. Exemplo: AAPL34, TSLA34, INTB3.')))
@@ -63,6 +67,21 @@ class StockCommand extends BaseCommand {
 
         return;
       }
+
+      if (interaction.options.getSubcommand() === 'get') {
+        interaction.deferReply({ ephemeral: true });
+        const stocks = await this._stockService.getStocks(interaction.user);
+        console.log(stocks);
+
+        stocks.forEach((stock: any) => {
+          interaction.user.send({
+            content: `${stock.longName}`
+          })
+        });
+
+        return;
+      }
+
 
       if (interaction.options.getSubcommand() === 'add') {
         const ticker = interaction.options.getString('ticker');
@@ -108,7 +127,7 @@ class StockCommand extends BaseCommand {
       if (exception instanceof BaseError) {
         console.log(exception);
         interaction.reply({
-          content: `${exception.message}`,
+          content: `${exception.message} `,
           ephemeral: true,
         });
 
