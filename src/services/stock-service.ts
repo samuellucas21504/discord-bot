@@ -195,7 +195,6 @@ export class StockService extends ApiService {
   }
 
   private todayIsWeekend() {
-    return false; // TODO - HABILITAR
     return this.isWeekend(new Date());
   }
 
