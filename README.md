@@ -8,6 +8,17 @@ Esse é um bot do discord que busca a cotação de ações que o usuário regist
 2. Clone o projeto com `git clone git@github.com:samuellucas21504/discord-bot.git`
 3. Crie um arquivo baseado em `.env.example` chamado `.env` com as configurações do seu bot.
 4. Execute `docker compose up`
+  - Caso seja sua primeira vez executando o bot, você deverá executar o seguinte comando no container do banco de dados:
+  ```
+    CREATE DATABASE IF NOT EXISTS discord_bot;
+    
+    CREATE USER IF NOT EXISTS 'botuser'@'%' IDENTIFIED BY 'botpassword';
+    
+    GRANT ALL PRIVILEGES ON discord_bot.* TO 'botuser'@'%';
+    
+    FLUSH PRIVILEGES;
+  ```
+  - Após executar isso, execute novamente `docker compose up`
 
 # COMANDOS
 
