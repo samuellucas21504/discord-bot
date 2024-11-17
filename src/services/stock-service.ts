@@ -7,6 +7,7 @@ import stock from '@models/stock.js';
 import StockMarketData from '@models/stockMarketData.js';
 import Stock from '@models/stock.js';
 import { Op } from 'sequelize';
+import { Cache } from './cache.js';
 
 export class StockNotFoundError extends BaseError {
   constructor(ticker: string) {
@@ -92,16 +93,14 @@ export class StockService extends ApiService {
           return stockMarketData;
         }
 
-        return null;
+        const result = await this.client.get(`quote/${stock.symbol}`, {
+          params: params,
+        });
 
-        // const result = await this.client.get(`quote/${stock.symbol}`, {
-        //   params: params,
-        // });
-        //
-        // const data = result.data.results[0];
-        // await this.associateStockMarketData(stock, data);
-        //
-        // return data;
+        const data = result.data.results[0];
+        await this.associateStockMarketData(stock, data);
+
+        return data;
       })
     );
 
@@ -109,6 +108,23 @@ export class StockService extends ApiService {
   }
 
   public async findCachedStockMarketData(stock: Stock) {
+    let marketData = await this.findCached(stock);
+    if (marketData) {
+      return marketData;
+    }
+
+    marketData = await this.findCachedOnDb(stock);
+    return marketData;
+  }
+
+  private async findCached(stock: Stock) {
+    const value = await Cache.get(`stocks:${stock.symbol}`);
+    if (!value) return;
+
+    return JSON.parse(value);
+  }
+
+  private async findCachedOnDb(stock: Stock) {
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
 
@@ -124,7 +140,15 @@ export class StockService extends ApiService {
       },
     });
 
+    await this.cacheStockMarketData(marketData);
     return marketData;
+  }
+
+  private async cacheStockMarketData(marketData: StockMarketData | null) {
+    if (!marketData) return;
+    await Cache.set(`stocks:${marketData.symbol}`, JSON.stringify(marketData.toJSON()));
+
+    return;
   }
 
   private isWeekend(date: Date): boolean {
@@ -138,14 +162,15 @@ export class StockService extends ApiService {
   }
 
   private async associateStockMarketData(stock: Stock, marketData: MarketData) {
-    console.log(marketData);
-    await StockMarketData.create({
+    const stockMarketData = await StockMarketData.create({
       stockId: stock.id,
       symbol: stock.symbol,
       longName: marketData['longName'],
       regularMarketPrice: marketData['regularMarketPrice'],
       regularMarketTime: new Date(marketData['regularMarketTime']),
     });
+
+    await this.cacheStockMarketData(stockMarketData);
   }
 }
 

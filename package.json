@@ -5,6 +5,7 @@
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.5",
     "mysql2": "^3.11.4",
+    "redis": "^4.7.0",
     "sequelize": "^6.37.5"
   },
   "name": "bot",

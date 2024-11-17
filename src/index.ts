@@ -3,8 +3,10 @@ import path from 'node:path';
 import { dirName as __dirname } from '@utils/dirname.js';
 import Client from '@utils/client.js';
 import { ENV } from '@utils/env.js';
+import { Cache } from '@services/cache.js';
 
 ENV.init();
+Cache.init();
 
 const client = Client.instance;
 const token = process.env.BOT_TOKEN;
