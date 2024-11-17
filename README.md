@@ -1,6 +1,6 @@
 # BOT DE AÇÕES DO DISCORD
 
-Esse bot consome a API da [brapi](https://brapi.dev/), então caso você deseje usar outra API, alterações em endpoints e lógica de serviço talvez sejam necessárias.
+Esse é um bot do discord que busca a cotação de ações que o usuário registra todos os dias de semana às 15h.
 
 ## COMO EXECUTAR
 
@@ -18,3 +18,7 @@ O bot atualmente conta com 4 comandos. Esses são:
   - remove (Remove uma ação da lista de notificações)
   - subscribe (Inscreve o usuário em uma lista de notificações)
   - unsubscribe (Remove o usuário da lista de notificações)
+
+# DISCLAIMERS
+
+Esse bot consome a API da [brapi](https://brapi.dev/), então caso você deseje usar outra API, alterações em endpoints e lógica de serviço talvez sejam necessárias.
