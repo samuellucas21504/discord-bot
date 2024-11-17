@@ -1,5 +1,6 @@
-import { Model, DataTypes, BelongsToManyAddAssociationMixin, BelongsToManyRemoveAssociationMixin } from 'sequelize';
+import { Model, DataTypes, BelongsToManyAddAssociationMixin, BelongsToManyRemoveAssociationMixin, BelongsToManyGetAssociationsMixin } from 'sequelize';
 import { Database } from '@models/index.js';
+import Stock from './stock.js';
 
 const sequelize = await Database.getSequelize();
 
@@ -14,8 +15,9 @@ interface UserAttributes {
 }
 
 class User extends Model<UserAttributes> {
-  declare addStock: BelongsToManyAddAssociationMixin<any, any>;
-  declare removeStock: BelongsToManyRemoveAssociationMixin<any, any>;
+  declare addStock: BelongsToManyAddAssociationMixin<Stock, User>;
+  declare removeStock: BelongsToManyRemoveAssociationMixin<Stock, User>;
+  declare getStocks: BelongsToManyGetAssociationsMixin<Stock>;
 }
 
 export default User.init(
