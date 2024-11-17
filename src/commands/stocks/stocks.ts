@@ -146,8 +146,9 @@ class StockCommand extends BaseCommand {
       }
 
     } catch (exception) {
+      console.log(exception);
+
       if (exception instanceof BaseError) {
-        console.log(exception);
         interaction.reply({
           content: `${exception.message} `,
           ephemeral: true,
@@ -155,8 +156,6 @@ class StockCommand extends BaseCommand {
 
         return;
       }
-
-      console.log(exception);
 
       interaction.reply({
         content: 'Ocorreu um erro durante a execução desse comando! Por favor tente mais tarde!',
