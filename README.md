@@ -1,6 +1,6 @@
 # BOT DE AÇÕES DO DISCORD
 
-Esse é um bot do discord que busca a cotação de ações que o usuário registra todos os dias de semana às 15h.
+Esse é um bot do discord que busca a cotação de ações que o usuário registra todos os dias de semana às 18h.
 
 ## COMO EXECUTAR
 
