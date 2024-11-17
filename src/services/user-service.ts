@@ -17,6 +17,10 @@ export class UserNotFoundError extends BaseError {
 }
 
 export class UserService {
+  public async findAll() {
+    return await User.findAll();
+  }
+
   public async find(user: DiscordUser) {
     return await User.findOne({
       where: {
@@ -27,7 +31,6 @@ export class UserService {
 
   public async create(user: DiscordUser, guild: Guild) {
     const userOnDb = await this.find(user);
-    console.log(userOnDb);
     if (userOnDb != null) {
       throw new UserAlreadyExistsError();
     }
