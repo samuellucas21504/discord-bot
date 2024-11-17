@@ -1,5 +1,5 @@
 import { ApiService } from '@services/api-service.js';
-import { User as DiscordUser } from 'discord.js';
+import { User as DiscordUser, EmbedBuilder, time, TimestampStyles } from 'discord.js';
 import { AxiosRequestHeaders } from "axios";
 import { UserNotFoundError, UserService } from './user-service.js';
 import { BaseError } from '@base/baseError.js';
@@ -8,6 +8,8 @@ import StockMarketData from '@models/stockMarketData.js';
 import Stock from '@models/stock.js';
 import { Op } from 'sequelize';
 import { Cache } from './cache.js';
+import User from '@models/user.js';
+import Client from '@utils/client.js';
 
 export class StockNotFoundError extends BaseError {
   constructor(ticker: string) {
@@ -69,25 +71,27 @@ export class StockService extends ApiService {
     await userOnDb.removeStock(stock);
   }
 
-  public async getStocks(user: DiscordUser): Promise<(StockMarketData | null)[]> {
+  public async sendStockReports() {
     if (this.todayIsWeekend()) {
       return [];
     }
+    const users = await this._userService.findAll();
 
-    const userOnDb = await this._userService.find(user);
-    if (userOnDb == null) {
-      throw new UserNotFoundError();
+    for (const user of users) {
+      await this.getUserStocks(user);
     }
+  }
 
+  private async getUserStocks(user: User) {
     const params = {
       range: '1d',
       interval: '1d',
     };
 
-    const stocks = await userOnDb.getStocks();
+    const stocks = await user.getStocks();
 
     const stockPrices = await Promise.all(
-      stocks.map(async (stock) => {
+      stocks.map(async (stock: Stock) => {
         const stockMarketData = await this.findCachedStockMarketData(stock);
         if (stockMarketData) {
           return stockMarketData;
@@ -104,8 +108,42 @@ export class StockService extends ApiService {
       })
     );
 
-    return stockPrices;
+    this.sendStockReport(user, stockPrices);
   }
+
+  private async sendStockReport(user: User, marketData: StockMarketData[]) {
+    if (marketData.length === 0) {
+      return;
+    }
+
+    const formatStockMessage = (info: StockMarketData) => {
+      const date = new Date(info.regularMarketTime!);
+      const formattedTime = time(date, TimestampStyles.ShortDateTime);
+
+      return new EmbedBuilder()
+        .setTitle(`${info.longName} (${info.symbol})`)
+        .addFields(
+          { name: 'Preço de hoje', value: `R$ ${info.regularMarketPrice.toFixed(2)}` },
+          { name: 'Horário da busca', value: formattedTime }
+        )
+        .setColor('#FFFAF1');
+    }
+
+    const client = Client.instance;
+
+    const embeds = [];
+    for (const stock of marketData) {
+      embeds.push(formatStockMessage(stock!));
+    }
+
+    const discordUser = await client.users.fetch(user.userId);
+    await discordUser?.send({
+      embeds: embeds
+    });
+
+    return;
+  }
+
 
   public async findCachedStockMarketData(stock: Stock) {
     let marketData = await this.findCached(stock);

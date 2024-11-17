@@ -1,4 +1,10 @@
-import { Model, DataTypes, BelongsToManyAddAssociationMixin, BelongsToManyRemoveAssociationMixin, BelongsToManyGetAssociationsMixin } from 'sequelize';
+import {
+  Model,
+  DataTypes,
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManyGetAssociationsMixin
+} from 'sequelize';
 import { Database } from '@models/index.js';
 import Stock from './stock.js';
 
@@ -15,12 +21,14 @@ interface UserAttributes {
 }
 
 class User extends Model<UserAttributes> {
+  declare userId: string;
+
   declare addStock: BelongsToManyAddAssociationMixin<Stock, User>;
   declare removeStock: BelongsToManyRemoveAssociationMixin<Stock, User>;
   declare getStocks: BelongsToManyGetAssociationsMixin<Stock>;
 }
 
-export default User.init(
+User.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -56,3 +64,5 @@ export default User.init(
     paranoid: true
   }
 );
+
+export default User;

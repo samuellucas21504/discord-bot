@@ -2,12 +2,10 @@ import { UserService } from '@services/user-service.js';
 import { BaseCommand } from '@base/baseCommand.js';
 import {
   ChatInputCommandInteraction,
-  EmbedBuilder,
   SlashCommandBuilder,
 } from 'discord.js';
 import { BaseError } from '@base/baseError.js';
 import { StockService } from '@services/stock-service.js';
-import StockMarketData from '@models/stockMarketData.js';
 
 const data = new SlashCommandBuilder()
   .setName('stocks')
@@ -20,10 +18,6 @@ const data = new SlashCommandBuilder()
     subcommand
       .setName('unsubscribe')
       .setDescription('Sair do canal de notificações.'))
-  .addSubcommand(subcommand =>
-    subcommand
-      .setName('get')
-      .setDescription('Buscar novamente suas ações do dia'))
   .addSubcommand(subcommand =>
     subcommand
       .setName('add')
@@ -69,41 +63,6 @@ class StockCommand extends BaseCommand {
 
         return;
       }
-
-      if (interaction.options.getSubcommand() === 'get') {
-        interaction.deferReply({ ephemeral: true });
-        const stocks = await this._stockService.getStocks(interaction.user);
-
-        if (stocks.length === 0) {
-          return;
-        }
-        const formatStockMessage = (info: StockMarketData) => {
-          const formattedTime = info.regularMarketTime!.toLocaleString('pt-BR', {
-            timeZone: 'America/Sao_Paulo',
-            dateStyle: 'short',
-            timeStyle: 'short',
-          });
-
-          return new EmbedBuilder()
-            .setTitle(`${info.longName} (${info.symbol})`)
-            .addFields(
-              { name: 'Preço de hoje', value: `R$ ${info.regularMarketPrice.toFixed(2)}` },
-              { name: 'Horário da busca', value: formattedTime }
-            )
-            .setColor('#00AAFF');
-        }
-
-        for (const stock of stocks) {
-          await interaction.user.send({
-            embeds: [formatStockMessage(stock!)]
-          });
-        }
-
-        interaction.deleteReply();
-
-        return;
-      }
-
 
       if (interaction.options.getSubcommand() === 'add') {
         const ticker = interaction.options.getString('ticker');
