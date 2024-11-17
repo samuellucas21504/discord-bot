@@ -5,6 +5,7 @@ export class Cache {
 
   public static async init() {
     this._client = createClient({
+      url: process.env.REDIS_URL,
       legacyMode: false,
     });
 

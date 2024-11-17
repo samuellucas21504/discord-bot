@@ -1,19 +1,21 @@
 version: "3.9"
 
 services:
-  # app:
-  #   build:
-  #     context: .
-  #     dockerfile: ./docker/app/Dockerfile
-  #   volumes:
-  #     - ./src:/usr/src/app/src
-  #     - ./package.json:/usr/src/app/package.json
-  #     - ./package-lock.json:/usr/src/app/package-lock.json
-  #   depends_on:
-  #     - mysql
-  #     - redis
-  #   env_file:
-  #     - ${ENV_FILE}
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./package.json:/usr/src/app/package.json
+      - ./package-lock.json:/usr/src/app/package-lock.json
+    depends_on:
+      - mysql
+      - redis
+    env_file:
+      - ${ENV_FILE}
+    networks:
+      - network
 
   mysql:
     build:
@@ -24,6 +26,8 @@ services:
       - ${ENV_FILE}
     ports:
       - "3308:3306"
+    networks:
+      - network
 
   redis:
     build:
@@ -32,6 +36,12 @@ services:
       - ${ENV_FILE}
     ports:
       - "6379:6379"
+    networks:
+      - network
 
 volumes:
   mysql_data:
+
+networks:
+  network:
+    driver: bridge

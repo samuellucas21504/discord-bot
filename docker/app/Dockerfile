@@ -6,6 +6,8 @@ COPY package*.json tsconfig.json ./
 
 RUN npm install
 
+COPY ./models ./models
+COPY ./config ./config
 COPY ./src ./src
 
 EXPOSE 3000
